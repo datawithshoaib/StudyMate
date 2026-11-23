@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import init_db
-from app.routers import documents, workspaces
+from app.routers import documents, summaries, workspaces
 from app.vector_store import create_chroma_client
 
 
@@ -30,6 +30,7 @@ def create_app(db_path: Path | None = None, chroma_path: Path | None = None) -> 
     )
     app.include_router(workspaces.router)
     app.include_router(documents.router)
+    app.include_router(summaries.router)
     return app
 
 

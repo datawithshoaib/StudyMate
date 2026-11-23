@@ -1,4 +1,4 @@
-import type { StudyDocument, Workspace } from "@/lib/types";
+import type { StudyDocument, Summary, Workspace } from "@/lib/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -76,5 +76,20 @@ export function uploadDocuments(workspaceId: number, files: File[]): Promise<Stu
 export function deleteDocument(workspaceId: number, documentId: number): Promise<void> {
   return request<void>(`/api/workspaces/${workspaceId}/documents/${documentId}`, {
     method: "DELETE",
+  });
+}
+
+export function listSummaries(workspaceId: number): Promise<Summary[]> {
+  return request<Summary[]>(`/api/workspaces/${workspaceId}/summaries`);
+}
+
+export function generateSummary(
+  workspaceId: number,
+  documentId: number,
+  perspective: string,
+): Promise<Summary> {
+  return request<Summary>(`/api/workspaces/${workspaceId}/summaries/generate`, {
+    method: "POST",
+    body: JSON.stringify({ document_id: documentId, perspective }),
   });
 }

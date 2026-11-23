@@ -30,3 +30,18 @@ class DocumentResponse(BaseModel):
     chunk_count: int
 
     model_config = {"from_attributes": True}
+
+
+class SummaryGenerateRequest(BaseModel):
+    document_id: int
+    perspective: str | None = None
+
+
+class SummaryResponse(BaseModel):
+    id: int
+    workspace_id: int
+    document_id: int
+    content: str
+    created_at: str
+
+    model_config = {"from_attributes": True}

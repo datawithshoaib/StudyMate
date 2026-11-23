@@ -12,3 +12,11 @@ export type StudyDocument = {
   uploaded_at: string;
   chunk_count: number;
 };
+
+export type Summary = {
+  id: number;
+  workspace_id: number;
+  document_id: number;
+  content: string;
+  created_at: string;
+};
