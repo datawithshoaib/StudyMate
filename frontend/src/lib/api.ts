@@ -1,14 +1,17 @@
-import type { Workspace } from "@/lib/types";
+import type { StudyDocument, Workspace } from "@/lib/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const isFormData = init?.body instanceof FormData;
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...init?.headers,
-    },
+    headers: isFormData
+      ? init?.headers
+      : {
+          "Content-Type": "application/json",
+          ...init?.headers,
+        },
     cache: "no-store",
   });
 
@@ -53,4 +56,25 @@ export function renameWorkspace(id: number, name: string): Promise<Workspace> {
 
 export function deleteWorkspace(id: number): Promise<void> {
   return request<void>(`/api/workspaces/${id}`, { method: "DELETE" });
+}
+
+export function listDocuments(workspaceId: number): Promise<StudyDocument[]> {
+  return request<StudyDocument[]>(`/api/workspaces/${workspaceId}/documents`);
+}
+
+export function uploadDocuments(workspaceId: number, files: File[]): Promise<StudyDocument[]> {
+  const body = new FormData();
+  for (const file of files) {
+    body.append("files", file);
+  }
+  return request<StudyDocument[]>(`/api/workspaces/${workspaceId}/documents`, {
+    method: "POST",
+    body,
+  });
+}
+
+export function deleteDocument(workspaceId: number, documentId: number): Promise<void> {
+  return request<void>(`/api/workspaces/${workspaceId}/documents/${documentId}`, {
+    method: "DELETE",
+  });
 }

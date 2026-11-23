@@ -20,3 +20,13 @@ class WorkspaceResponse(BaseModel):
     updated_at: str
 
     model_config = {"from_attributes": True}
+
+
+class DocumentResponse(BaseModel):
+    id: int
+    workspace_id: int
+    filename: str
+    uploaded_at: str
+    chunk_count: int
+
+    model_config = {"from_attributes": True}

@@ -16,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DocumentsPanel } from "@/components/documents-panel";
 import type { Workspace } from "@/lib/types";
 
 const sections = [
@@ -70,15 +71,19 @@ export function WorkspaceView({ workspace }: { workspace: Workspace }) {
         </TabsList>
         {sections.map((section) => (
           <TabsContent key={section.value} value={section.value}>
-            <Card>
-              <CardHeader>
-                <CardTitle>{section.label}</CardTitle>
-                <CardDescription>{section.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                This section is coming soon.
-              </CardContent>
-            </Card>
+            {section.value === "documents" ? (
+              <DocumentsPanel key={workspace.id} workspaceId={workspace.id} />
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle>{section.label}</CardTitle>
+                  <CardDescription>{section.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-sm text-muted-foreground">
+                  This section is coming soon.
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
         ))}
       </Tabs>
