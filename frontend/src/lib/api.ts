@@ -1,4 +1,4 @@
-import type { ChatMessage, Citation, StudyDocument, Workspace } from "@/lib/types";
+import type { ChatMessage, Citation, StudyDocument, Summary, Workspace } from "@/lib/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -123,4 +123,19 @@ export async function streamChat(
     }
     if (done) break;
   }
+}
+
+export function listSummaries(workspaceId: number): Promise<Summary[]> {
+  return request<Summary[]>(`/api/workspaces/${workspaceId}/summaries`);
+}
+
+export function generateSummary(
+  workspaceId: number,
+  documentId: number,
+  perspective: string,
+): Promise<Summary> {
+  return request<Summary>(`/api/workspaces/${workspaceId}/summaries/generate`, {
+    method: "POST",
+    body: JSON.stringify({ document_id: documentId, perspective }),
+  });
 }

@@ -29,3 +29,11 @@ export type ChatMessage = {
   citations: Citation[];
   created_at: string;
 };
+
+export type Summary = {
+  id: number;
+  workspace_id: number;
+  document_id: number;
+  content: string;
+  created_at: string;
+};
