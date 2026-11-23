@@ -1,7 +1,15 @@
 .venv/
 .env
+.env*.local
 __pycache__/
 *.pyc
+.pytest_cache/
 chroma_db/
 chat_history.db
+studymate.db
 uploads/
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+npm-debug.log*
