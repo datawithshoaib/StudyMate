@@ -65,6 +65,13 @@ CREATE TABLE IF NOT EXISTS quiz_questions (
     source_doc TEXT
 );
 
+CREATE TABLE IF NOT EXISTS quiz_submissions (
+    quiz_id INTEGER PRIMARY KEY REFERENCES quizzes(id) ON DELETE CASCADE,
+    answers TEXT NOT NULL,
+    score INTEGER NOT NULL,
+    submitted_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS summaries (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     workspace_id INTEGER NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,

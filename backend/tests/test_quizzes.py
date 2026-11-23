@@ -77,6 +77,10 @@ def test_generate_list_get_and_score_quiz(client: TestClient, monkeypatch) -> No
     assert scored["questions"][0]["explanation"] == "Protons carry a positive charge."
     assert scored["questions"][0]["source_doc"] == "atoms.txt"
     assert scored["questions"][0]["source_page"] == 1
+    reopened = client.get(f"/api/workspaces/{workspace_id}/quizzes/{quiz['id']}").json()
+    assert reopened["submitted"] is True
+    assert reopened["score"] == 1
+    assert reopened["questions"][0]["is_correct"] is True
 
 
 def test_quiz_generation_requires_documents_and_valid_configuration(client: TestClient, monkeypatch) -> None:
