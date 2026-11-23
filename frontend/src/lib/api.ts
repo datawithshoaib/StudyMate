@@ -1,4 +1,4 @@
-import type { ChatMessage, Citation, StudyDocument, Summary, Workspace } from "@/lib/types";
+import type { ChatMessage, Citation, Flashcard, Quiz, StudyDocument, Summary, Workspace } from "@/lib/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -137,5 +137,46 @@ export function generateSummary(
   return request<Summary>(`/api/workspaces/${workspaceId}/summaries/generate`, {
     method: "POST",
     body: JSON.stringify({ document_id: documentId, perspective }),
+  });
+}
+
+export function listFlashcards(workspaceId: number): Promise<Flashcard[]> {
+  return request<Flashcard[]>(`/api/workspaces/${workspaceId}/flashcards`);
+}
+
+export function generateFlashcards(workspaceId: number): Promise<Flashcard[]> {
+  return request<Flashcard[]>(`/api/workspaces/${workspaceId}/flashcards/generate`, { method: "POST" });
+}
+
+export function reviewFlashcard(
+  workspaceId: number,
+  cardId: number,
+  result: "got_it" | "missed_it",
+): Promise<Flashcard> {
+  return request<Flashcard>(`/api/workspaces/${workspaceId}/flashcards/${cardId}/review`, {
+    method: "POST",
+    body: JSON.stringify({ result }),
+  });
+}
+
+export function listQuizzes(workspaceId: number): Promise<Quiz[]> {
+  return request<Quiz[]>(`/api/workspaces/${workspaceId}/quizzes`);
+}
+
+export function getQuiz(workspaceId: number, quizId: number): Promise<Quiz> {
+  return request<Quiz>(`/api/workspaces/${workspaceId}/quizzes/${quizId}`);
+}
+
+export function generateQuiz(workspaceId: number, count: number, difficulty: string): Promise<Quiz> {
+  return request<Quiz>(`/api/workspaces/${workspaceId}/quizzes/generate`, {
+    method: "POST",
+    body: JSON.stringify({ count, difficulty }),
+  });
+}
+
+export function submitQuiz(workspaceId: number, quizId: number, answers: Record<number, number>): Promise<Quiz> {
+  return request<Quiz>(`/api/workspaces/${workspaceId}/quizzes/${quizId}/submit`, {
+    method: "POST",
+    body: JSON.stringify({ answers }),
   });
 }

@@ -19,6 +19,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DocumentsPanel } from "@/components/documents-panel";
 import { ChatPanel } from "@/components/chat-panel";
 import { SummaryNotesPanel } from "@/components/summary-notes-panel";
+import { FlashcardsPanel } from "@/components/flashcards-panel";
+import { QuizzesPanel } from "@/components/quizzes-panel";
 import type { Workspace } from "@/lib/types";
 
 const sections = [
@@ -79,6 +81,10 @@ export function WorkspaceView({ workspace }: { workspace: Workspace }) {
               <DocumentsPanel key={workspace.id} workspaceId={workspace.id} />
             ) : section.value === "summaries" ? (
               <SummaryNotesPanel key={workspace.id} workspaceId={workspace.id} />
+            ) : section.value === "flashcards" ? (
+              <FlashcardsPanel key={workspace.id} workspaceId={workspace.id} />
+            ) : section.value === "quizzes" ? (
+              <QuizzesPanel key={workspace.id} workspaceId={workspace.id} />
             ) : (
               <Card>
                 <CardHeader>

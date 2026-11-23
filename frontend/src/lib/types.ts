@@ -37,3 +37,37 @@ export type Summary = {
   content: string;
   created_at: string;
 };
+
+export type Flashcard = {
+  id: number;
+  workspace_id: number;
+  question: string;
+  answer: string;
+  source_page: number | null;
+  source_doc: string | null;
+  created_at: string;
+  last_review: "got_it" | "missed_it" | null;
+};
+
+export type QuizQuestion = {
+  id: number;
+  question: string;
+  options: string[];
+  correct_option: number | null;
+  explanation: string | null;
+  source_page: number | null;
+  source_doc: string | null;
+  selected_option?: number | null;
+  is_correct?: boolean | null;
+};
+
+export type Quiz = {
+  id: number;
+  workspace_id: number;
+  difficulty: string;
+  created_at: string;
+  question_count: number;
+  score: number | null;
+  submitted: boolean;
+  questions: QuizQuestion[];
+};
