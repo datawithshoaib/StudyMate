@@ -30,3 +30,25 @@ class DocumentResponse(BaseModel):
     chunk_count: int
 
     model_config = {"from_attributes": True}
+
+
+class ChatRequest(BaseModel):
+    message: str
+    document_id: int | None = None
+
+
+class Citation(BaseModel):
+    number: int
+    document_id: int
+    filename: str
+    page: int
+    snippet: str
+
+
+class MessageResponse(BaseModel):
+    id: int
+    workspace_id: int
+    role: str
+    content: str
+    citations: list[Citation]
+    created_at: str

@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DocumentsPanel } from "@/components/documents-panel";
+import { ChatPanel } from "@/components/chat-panel";
 import type { Workspace } from "@/lib/types";
 
 const sections = [
@@ -71,7 +72,9 @@ export function WorkspaceView({ workspace }: { workspace: Workspace }) {
         </TabsList>
         {sections.map((section) => (
           <TabsContent key={section.value} value={section.value}>
-            {section.value === "documents" ? (
+            {section.value === "chat" ? (
+              <ChatPanel key={workspace.id} workspaceId={workspace.id} />
+            ) : section.value === "documents" ? (
               <DocumentsPanel key={workspace.id} workspaceId={workspace.id} />
             ) : (
               <Card>

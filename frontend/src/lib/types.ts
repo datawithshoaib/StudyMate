@@ -12,3 +12,20 @@ export type StudyDocument = {
   uploaded_at: string;
   chunk_count: number;
 };
+
+export type Citation = {
+  number: number;
+  document_id: number;
+  filename: string;
+  page: number;
+  snippet: string;
+};
+
+export type ChatMessage = {
+  id: number;
+  workspace_id: number;
+  role: "user" | "assistant";
+  content: string;
+  citations: Citation[];
+  created_at: string;
+};

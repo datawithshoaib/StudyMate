@@ -1,4 +1,4 @@
-import type { StudyDocument, Workspace } from "@/lib/types";
+import type { ChatMessage, Citation, StudyDocument, Workspace } from "@/lib/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -77,4 +77,50 @@ export function deleteDocument(workspaceId: number, documentId: number): Promise
   return request<void>(`/api/workspaces/${workspaceId}/documents/${documentId}`, {
     method: "DELETE",
   });
+}
+
+export function listMessages(workspaceId: number): Promise<ChatMessage[]> {
+  return request<ChatMessage[]>(`/api/workspaces/${workspaceId}/messages`);
+}
+
+export function clearMessages(workspaceId: number): Promise<void> {
+  return request<void>(`/api/workspaces/${workspaceId}/messages`, { method: "DELETE" });
+}
+
+export async function streamChat(
+  workspaceId: number,
+  message: string,
+  documentId: number | null,
+  onToken: (token: string) => void,
+  onCitation: (citation: Citation) => void,
+): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/workspaces/${workspaceId}/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, document_id: documentId }),
+  });
+  if (!response.ok) {
+    const body = (await response.json().catch(() => null)) as { detail?: string } | null;
+    throw new Error(body?.detail ?? `Request failed with status ${response.status}`);
+  }
+  if (!response.body) throw new Error("The server did not return a stream");
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  while (true) {
+    const { value, done } = await reader.read();
+    buffer += decoder.decode(value, { stream: !done });
+    const events = buffer.split("\n\n");
+    buffer = events.pop() ?? "";
+    for (const event of events) {
+      const line = event.split("\n").find((part) => part.startsWith("data: "));
+      if (!line) continue;
+      const parsed = JSON.parse(line.slice(6)) as { type: string; data: string | Citation | { message?: string } };
+      if (parsed.type === "token" && typeof parsed.data === "string") onToken(parsed.data);
+      if (parsed.type === "citation") onCitation(parsed.data as Citation);
+      if (parsed.type === "error") throw new Error((parsed.data as { message?: string }).message ?? "Chat failed");
+    }
+    if (done) break;
+  }
 }
