@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { WorkspaceSidebar } from "@/components/workspace-sidebar";
 import { WorkspaceView } from "@/components/workspace-view";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -81,6 +82,9 @@ export default function Home() {
         <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger />
           <span className="text-sm font-medium">StudyMate</span>
+          <div className="ml-auto">
+            <ThemeToggle />
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto">
           {error ? (
