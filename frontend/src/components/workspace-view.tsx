@@ -6,15 +6,9 @@ import {
   NotebookPen,
   Shapes,
   SquareCheckBig,
+  Sparkles,
 } from "lucide-react";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DocumentsPanel } from "@/components/documents-panel";
 import { ChatPanel } from "@/components/chat-panel";
@@ -28,47 +22,59 @@ const sections = [
     value: "chat",
     label: "Chat",
     icon: MessageCircle,
-    description: "Ask questions grounded in your documents.",
   },
   {
     value: "documents",
     label: "Documents",
     icon: FileText,
-    description: "Upload and manage your study materials.",
   },
   {
     value: "flashcards",
     label: "Flashcards",
     icon: Shapes,
-    description: "Review key ideas with flip-and-rate cards.",
   },
   {
     value: "quizzes",
     label: "Quizzes",
     icon: SquareCheckBig,
-    description: "Test yourself with multiple-choice practice.",
   },
   {
     value: "summaries",
     label: "Summary Notes",
     icon: NotebookPen,
-    description: "Scan structured notes for each document.",
   },
 ];
 
 export function WorkspaceView({ workspace }: { workspace: Workspace }) {
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{workspace.name}</h1>
-        <p className="text-sm text-muted-foreground">Study workspace</p>
+    <div className="flex flex-col gap-6 p-4 sm:p-6 lg:p-8">
+      <div className="relative overflow-hidden rounded-2xl border bg-card px-5 py-6 shadow-sm sm:px-7 sm:py-7">
+        <div className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full bg-primary/10 blur-3xl" />
+        <div className="relative flex flex-wrap items-start justify-between gap-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-xs font-medium tracking-wide text-primary uppercase">
+              <Sparkles className="size-3.5" />
+              Study workspace
+            </div>
+            <h1 className="font-heading text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
+              {workspace.name}
+            </h1>
+            <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
+              Chat with your documents, then turn what you learn into flashcards, quizzes, and notes.
+            </p>
+          </div>
+        </div>
       </div>
 
-      <Tabs defaultValue="chat">
-        <TabsList>
+      <Tabs defaultValue="chat" className="gap-5">
+        <TabsList className="h-11 w-fit max-w-full flex-wrap gap-1 overflow-x-auto rounded-xl p-1 sm:flex-nowrap">
           {sections.map((section) => (
-            <TabsTrigger key={section.value} value={section.value}>
-              <section.icon />
+            <TabsTrigger
+              key={section.value}
+              value={section.value}
+              className="h-9 gap-2 rounded-lg px-3 text-sm data-active:shadow-sm"
+            >
+              <section.icon className="size-4" />
               {section.label}
             </TabsTrigger>
           ))}
@@ -83,18 +89,8 @@ export function WorkspaceView({ workspace }: { workspace: Workspace }) {
               <SummaryNotesPanel key={workspace.id} workspaceId={workspace.id} />
             ) : section.value === "flashcards" ? (
               <FlashcardsPanel key={workspace.id} workspaceId={workspace.id} />
-            ) : section.value === "quizzes" ? (
-              <QuizzesPanel key={workspace.id} workspaceId={workspace.id} />
             ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>{section.label}</CardTitle>
-                  <CardDescription>{section.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="text-sm text-muted-foreground">
-                  This section is coming soon.
-                </CardContent>
-              </Card>
+              <QuizzesPanel key={workspace.id} workspaceId={workspace.id} />
             )}
           </TabsContent>
         ))}

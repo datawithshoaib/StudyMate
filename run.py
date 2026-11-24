@@ -9,17 +9,20 @@ FRONTEND = ROOT / "frontend"
 
 
 def main() -> None:
+    commands = {}
     for command in ("uv", "npm"):
-        if shutil.which(command) is None:
+        resolved = shutil.which(command)
+        if resolved is None:
             raise SystemExit(f"{command} is required but was not found on PATH.")
+        commands[command] = resolved
 
     processes = [
         subprocess.Popen(
-            ["uv", "run", "uvicorn", "app.main:app", "--reload", "--port", "8000"],
+            [commands["uv"], "run", "uvicorn", "app.main:app", "--reload", "--port", "8000"],
             cwd=BACKEND,
         ),
         subprocess.Popen(
-            ["npm", "run", "dev", "--", "--port", "3000"],
+            [commands["npm"], "run", "dev", "--", "--port", "3000"],
             cwd=FRONTEND,
         ),
     ]

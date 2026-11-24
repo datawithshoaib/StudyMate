@@ -2,7 +2,16 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
-import { BookOpen, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  BookOpen,
+  FolderOpen,
+  LoaderCircle,
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  Trash2,
+  TriangleAlert,
+} from "lucide-react";
 
 import {
   AlertDialog,
@@ -14,6 +23,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -44,6 +54,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BrandMark } from "@/components/brand-mark";
 import { createWorkspace, deleteWorkspace, renameWorkspace } from "@/lib/api";
 import type { Workspace } from "@/lib/types";
 
@@ -135,18 +146,29 @@ export function WorkspaceSidebar({
 
   return (
     <>
-      <SidebarHeader className="px-4 py-3">
-        <div className="flex items-center gap-2 text-base font-semibold">
-          <BookOpen className="size-5" />
-          StudyMate
+      <SidebarHeader className="gap-3 px-4 py-4">
+        <div className="flex items-center gap-3">
+          <BrandMark className="size-9" />
+          <div className="flex min-w-0 flex-col leading-tight">
+            <span className="font-heading text-base font-semibold tracking-tight">
+              StudyMate
+            </span>
+            <span className="text-[11px] text-sidebar-foreground/60">
+              Learn smarter, together
+            </span>
+          </div>
         </div>
-        <p className="text-xs text-sidebar-foreground/60">
-          Your study workspaces
-        </p>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Workspaces</SidebarGroupLabel>
+          <SidebarGroupLabel className="flex items-center gap-2 text-[11px] font-semibold tracking-widest uppercase">
+            Workspaces
+            {!loading ? (
+              <Badge variant="secondary" className="h-4 border-0 px-1.5 text-[10px]">
+                {workspaces.length}
+              </Badge>
+            ) : null}
+          </SidebarGroupLabel>
           <SidebarGroupAction aria-label="Create workspace" onClick={openCreate}>
             <Plus />
           </SidebarGroupAction>
@@ -158,15 +180,19 @@ export function WorkspaceSidebar({
                   <Skeleton className="h-8 w-4/5" />
                 </div>
               ) : workspaces.length === 0 ? (
-                <p className="px-2 py-4 text-xs text-sidebar-foreground/60">
-                  No workspaces yet. Create one to get started.
-                </p>
+                <div className="mx-1 flex flex-col items-center gap-2 rounded-xl border border-dashed px-3 py-6 text-center">
+                  <FolderOpen className="size-5 text-muted-foreground" />
+                  <p className="text-xs text-sidebar-foreground/60">
+                    No workspaces yet. Create one to get started.
+                  </p>
+                </div>
               ) : (
                 workspaces.map((workspace) => (
                   <SidebarMenuItem key={workspace.id}>
                     <SidebarMenuButton
                       isActive={workspace.id === selectedId}
                       onClick={() => onSelect(workspace.id)}
+                      tooltip={workspace.name}
                     >
                       <BookOpen />
                       <span className="truncate">{workspace.name}</span>
@@ -234,13 +260,19 @@ export function WorkspaceSidebar({
                 placeholder="e.g. CS101"
                 autoFocus
               />
-              {error ? <p className="text-sm text-destructive">{error}</p> : null}
+              {error ? (
+                <p role="alert" className="flex items-center gap-1.5 text-sm text-destructive">
+                  <TriangleAlert className="size-3.5" />
+                  {error}
+                </p>
+              ) : null}
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={closeDialog}>
                 Cancel
               </Button>
               <Button type="submit" disabled={busy || !name.trim()}>
+                {busy ? <LoaderCircle className="animate-spin" /> : null}
                 {mode === "create" ? "Create" : "Save"}
               </Button>
             </DialogFooter>
@@ -265,7 +297,9 @@ export function WorkspaceSidebar({
             </AlertDialogDescription>
           </AlertDialogHeader>
           {deleteError ? (
-            <p className="text-sm text-destructive">{deleteError}</p>
+            <p role="alert" className="text-sm text-destructive">
+              {deleteError}
+            </p>
           ) : null}
           <AlertDialogFooter>
             <AlertDialogCancel disabled={busy}>Cancel</AlertDialogCancel>

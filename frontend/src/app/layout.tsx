@@ -15,17 +15,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "StudyMate",
-  description: "Your AI study companion",
+  title: "StudyMate — Your AI study workspace",
+  description: "Turn your documents into chat, flashcards, quizzes, and study notes.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col bg-background">
         <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
